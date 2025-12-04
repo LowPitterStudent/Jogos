@@ -1,4 +1,4 @@
-/* CENTRALIZA A TELA */
+/* ================== BODY E GAME CONTAINER ================== */
 body {
     margin: 0;
     padding: 0;
@@ -9,11 +9,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    height: 100vh; /* CENTRALIZA DE VERDADE */
+    height: 100vh;
 }
 
 #game-container {
+    position: relative; /* Para posicionar o botão de pausa */
     width: 320px;
     padding: 20px;
     background: #1e1e1e;
@@ -21,7 +21,38 @@ body {
     text-align: center;
 }
 
-/* BOTÕES */
+/* ================== TÍTULO ================== */
+#game-container h1 {
+    margin: 0 0 15px 0;
+}
+
+/* ================== STATUS (Nível, XP, Vidas) ================== */
+#status {
+    display: flex;
+    justify-content: space-around; /* Espaço igual entre os itens */
+    margin-bottom: 20px;
+}
+
+#status p {
+    margin: 0;
+}
+
+/* ================== PERGUNTA ================== */
+#pergunta {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* ================== INPUT ================== */
+input {
+    width: 90%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+}
+
+/* ================== BOTÕES ================== */
 button {
     padding: 10px;
     margin: 5px;
@@ -31,21 +62,24 @@ button {
     background: #444;
     color: white;
     cursor: pointer;
+    transition: background 0.2s;
 }
+
 button:hover {
     background: #666;
 }
 
-/* INPUT */
-input {
-    width: 90%;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    margin-top: 10px;
+/* ================== BOTÃO DE PAUSA ================== */
+#botao-pausa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    padding: 6px 10px;
+    font-size: 12px;
 }
 
-/* ====== TELA DE DERROTA ====== */
+/* ================== TELA DE DERROTA ================== */
 #perdeu-tela {
     position: fixed;
     top: 0;
@@ -53,7 +87,7 @@ input {
     width: 100%;
     height: 100%;
 
-    display: none;     /* <---- ESSENCIAL */
+    display: none;
     justify-content: center;
     align-items: center;
 
