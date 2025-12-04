@@ -30,10 +30,10 @@ function iniciarTimer() {
     atualizarTimer();
 
     timerInterval = setInterval(() => {
-        tempo-1;
+        tempo++;
         atualizarTimer();
 
-        if (tempo <= 0) {
+        if (tempo >= 100) {
             clearInterval(timerInterval);
             mostrarGameOver();
         }
