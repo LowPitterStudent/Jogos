@@ -30,7 +30,7 @@ function iniciarTimer() {
     atualizarTimer();
 
     timerInterval = setInterval(() => {
-        tempo--;
+        tempo-1;
         atualizarTimer();
 
         if (tempo <= 0) {
