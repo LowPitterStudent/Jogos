@@ -54,8 +54,7 @@ function novaPergunta() {
 /* ------------------- TEMPO -------------------- */
 function iniciarTempo() {
     clearInterval(intervalo);
-    tempo = 40;
-    tempoSpan.textContent = tempo;
+    tempoSpan.textContent = tempo; // mostra tempo atual
 
     intervalo = setInterval(() => {
         if (jogoTravado || pausado) return;
@@ -107,6 +106,10 @@ function enviarResposta() {
         somAcerto.currentTime = 0;
         somAcerto.play().catch(() => {});
         ganharXP();
+
+        // ADICIONA 40 SEGUNDOS AO TEMPO ATUAL
+        tempo += 40;
+        tempoSpan.textContent = tempo;
     } else {
         vidas--;
         if (vidas < 1) return perder();
@@ -141,6 +144,7 @@ document.getElementById("jogar-novamente").onclick = () => {
     nivel = 1;
     xp = 0;
     vidas = 5;
+    tempo = 40;
     jogoTravado = false;
     pausado = false;
 
