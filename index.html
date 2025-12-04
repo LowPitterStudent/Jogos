@@ -8,26 +8,33 @@
 <body>
 
 <div id="game-container">
+    <!-- Título -->
     <h1>Jogo de Matemática</h1>
 
+    <!-- Status lado a lado -->
     <div id="status">
         <p>Nível: <span id="nivel">1</span></p>
         <p>XP: <span id="xp">0</span></p>
         <p>Vidas: <span id="vidas">5</span></p>
-        <p>Tempo: <span id="tempo">40</span>s</p>
     </div>
 
+    <!-- Pergunta centralizada -->
     <div id="pergunta"></div>
 
+    <!-- Input de resposta -->
     <input id="resposta" type="number" placeholder="Digite sua resposta">
 
-    <button id="enviar">Enviar</button>
-    <button id="desistir">Desistir</button>
+    <!-- Botões de enviar e desistir -->
+    <div>
+        <button id="enviar">Enviar</button>
+        <button id="desistir">Desistir</button>
+    </div>
 
+    <!-- Mensagem (ex: "Jogo pausado!") -->
     <p id="mensagem"></p>
 </div>
 
-<!-- Tela de derrota (COMEÇA INVISÍVEL) -->
+<!-- Tela de derrota -->
 <div id="perdeu-tela">
     <div id="perdeu-caixa">
         <h2>Você perdeu!</h2>
@@ -37,8 +44,10 @@
     </div>
 </div>
 
+<!-- Áudio de acerto -->
 <audio id="som-acerto" src="ding-36029.mp3"></audio>
 
+<!-- JS -->
 <script src="script.js"></script>
 </body>
 </html>
