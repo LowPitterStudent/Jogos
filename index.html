@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Joguinho de Matemática</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <div class="container">
+        <h1>Jogo de Matemática 🎮</h1>
+
+        <p id="conta">Carregando conta...</p>
+
+        <input type="number" id="resposta" placeholder="Digite sua resposta">
+        
+        <div class="buttons">
+            <button onclick="verificar()">Responder</button>
+            <button onclick="pular()">Pular</button>
+        </div>
+
+        <h2>Pontuação</h2>
+        <p>Acertos: <span id="acertos">0</span></p>
+        <p>Erros: <span id="erros">0</span></p>
+        <p>Pulos: <span id="pulos">0</span></p>
+        <p>Pontos totais: <span id="pontos">0</span></p>
+
+        <p id="mensagem"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
