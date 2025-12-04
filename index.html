@@ -7,41 +7,39 @@
 </head>
 <body>
 
-    <!-- Container principal do jogo -->
-    <div id="game-container">
+<div id="game-container">
 
-        <h1>Jogo de Matemática</h1>
+    <h1>Jogo de Matemática</h1>
 
-        <div id="status">
-            <p>Nível: <span id="nivel">1</span></p>
-            <p>XP: <span id="xp">0</span></p>
-            <p>Vidas: <span id="vidas">5</span></p>
-            <p>Tempo: <span id="timer">40</span></p>
-        </div>
-
-        <div id="pergunta"></div>
-
-        <input id="resposta" type="number" placeholder="Digite sua resposta">
-
-        <button id="enviar">Enviar</button>
-        <button id="desistir">Desistir</button>
-
-        <p id="mensagem"></p>
+    <div id="status">
+        <p>Nível: <span id="nivel">1</span></p>
+        <p>XP: <span id="xp">0</span></p>
+        <p>Vidas: <span id="vidas">5</span></p>
+        <p>Tempo: <span id="tempo">40</span>s</p>
     </div>
 
-    <!-- Tela de Game Over -->
-    <div id="gameover-bg" class="hide">
-        <div id="gameover-box">
-            <h2>Você perdeu!</h2>
-            <p>Seu nível final: <span id="nivel-final"></span></p>
-            <p>Recorde: <span id="recorde"></span></p>
-            <button id="restart-btn">Jogar Novamente</button>
-        </div>
+    <div id="pergunta"></div>
+
+    <input id="resposta" type="number" placeholder="Digite sua resposta">
+
+    <button id="enviar">Enviar</button>
+    <button id="desistir">Desistir</button>
+
+    <p id="mensagem"></p>
+</div>
+
+<!-- TELa DE DERROTA (COMEÇA OCULTA) -->
+<div id="perdeu-tela" class="hidden">
+    <div id="perdeu-caixa">
+        <h2>Você perdeu!</h2>
+        <p>Seu nível final: <span id="nivel-final"></span></p>
+        <p>Recorde: <span id="recorde"></span></p>
+        <button id="jogar-novamente">Jogar novamente</button>
     </div>
+</div>
 
-    <!-- Som -->
-    <audio id="som-acerto" src="ding-36029.mp3"></audio>
+<audio id="som-acerto" src="ding-36029.mp3"></audio>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
