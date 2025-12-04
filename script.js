@@ -3,6 +3,7 @@ let xp = 0;
 let vidas = 5;
 let tempo = 40;
 let intervalo;
+let jogoTravado = false;
 
 const nivelSpan = document.getElementById("nivel");
 const xpSpan = document.getElementById("xp");
@@ -15,17 +16,16 @@ const mensagem = document.getElementById("mensagem");
 const perdeuTela = document.getElementById("perdeu-tela");
 const nivelFinal = document.getElementById("nivel-final");
 const recordeSpan = document.getElementById("recorde");
+
 const somAcerto = document.getElementById("som-acerto");
 
 let respostaCerta;
 
-// ----- RECORD -----
 let recorde = localStorage.getItem("recorde") || 0;
 
-// ----- NOVA PERGUNTA -----
+/* ------------------- NOVA PERGUNTA -------------------- */
 function novaPergunta() {
     let max = nivel * 10;
-
     const a = Math.floor(Math.random() * max) + 1;
     const b = Math.floor(Math.random() * max) + 1;
 
@@ -49,24 +49,26 @@ function novaPergunta() {
     respostaInput.focus();
 }
 
-// ----- CONTADOR -----
+/* ------------------- TEMPO -------------------- */
 function iniciarTempo() {
     clearInterval(intervalo);
     tempo = 40;
     tempoSpan.textContent = tempo;
 
     intervalo = setInterval(() => {
+        if (jogoTravado) return;
         tempo--;
         tempoSpan.textContent = tempo;
 
-        if (tempo <= 0) {
-            perder();
-        }
+        if (tempo <= 0) perder();
     }, 1000);
 }
 
-// ----- FUNÇÃO PERDER -----
+/* ------------------- DERROTA -------------------- */
 function perder() {
+    if (jogoTravado) return;
+
+    jogoTravado = true;
     clearInterval(intervalo);
 
     nivelFinal.textContent = nivel;
@@ -81,7 +83,7 @@ function perder() {
     perdeuTela.style.display = "flex";
 }
 
-// ----- GANHAR XP -----
+/* ------------------- XP / NÍVEL -------------------- */
 function ganharXP() {
     xp += Math.floor(100 / nivel + nivel);
 
@@ -91,53 +93,59 @@ function ganharXP() {
     }
 }
 
-// ----- ENVIAR RESPOSTA -----
-document.getElementById("enviar").onclick = enviarResposta;
-
+/* ------------------- ENVIAR RESPOSTA -------------------- */
 function enviarResposta() {
+    if (jogoTravado) return;
+
     const r = Number(respostaInput.value);
 
     if (r === respostaCerta) {
+        somAcerto.currentTime = 0;
         somAcerto.play().catch(() => {});
         ganharXP();
     } else {
         vidas--;
-        if (vidas <= 0) perder();
+        if (vidas <= 0) return perder();
     }
 
-    atualizarStatus();
+    atualizar();
     respostaInput.value = "";
     novaPergunta();
     iniciarTempo();
 }
 
-// ENTER para confirmar
-respostaInput.addEventListener("keypress", e => {
+document.getElementById("enviar").onclick = enviarResposta;
+
+/* ENTER confirma */
+respostaInput.addEventListener("keydown", e => {
     if (e.key === "Enter") enviarResposta();
 });
 
-// ----- BOTÃO DESISTIR -----
+/* ------------------- DESISTIR -------------------- */
 document.getElementById("desistir").onclick = perder;
 
-// ----- JOGAR NOVAMENTE -----
+/* ------------------- JOGAR NOVAMENTE -------------------- */
 document.getElementById("jogar-novamente").onclick = () => {
     perdeuTela.style.display = "none";
+
     nivel = 1;
     xp = 0;
     vidas = 5;
-    atualizarStatus();
+    jogoTravado = false;
+
+    atualizar();
     novaPergunta();
     iniciarTempo();
 };
 
-// ----- ATUALIZAR TELA -----
-function atualizarStatus() {
+/* ------------------- ATUALIZAR -------------------- */
+function atualizar() {
     nivelSpan.textContent = nivel;
     xpSpan.textContent = xp;
     vidasSpan.textContent = vidas;
 }
 
-// ----- INÍCIO -----
-atualizarStatus();
+/* ------------------- INÍCIO -------------------- */
+atualizar();
 novaPergunta();
 iniciarTempo();
