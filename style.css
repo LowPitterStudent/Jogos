@@ -1,125 +1,65 @@
 body {
-    margin: 0;
-    font-family: Arial;
     background: #111;
+    font-family: Arial, sans-serif;
     color: white;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding-top: 40px;
 }
 
-/* CAIXA DO JOGO */
 #game-container {
-    background: #222;
-    padding: 25px;
-    width: 330px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(255,255,255,0.1);
-}
-
-/* STATUS */
-#status p {
-    margin: 5px 0;
-    font-size: 18px;
-}
-
-/* PERGUNTA */
-#pergunta {
-    font-size: 30px;
-    margin: 20px 0;
-    font-weight: bold;
-}
-
-/* INPUT */
-#resposta {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
-    border: none;
-    font-size: 18px;
+    width: 320px;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 15px;
     text-align: center;
 }
 
-/* BOTÕES */
 button {
-    padding: 10px 20px;
-    margin: 8px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
     background: #444;
     color: white;
-    font-size: 16px;
-    transition: 0.2s;
+    border: none;
+    padding: 10px;
+    width: 120px;
+    margin: 5px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 button:hover {
     background: #666;
 }
 
-/* MENSAGENS */
-#acertou {
-    color: green;
+input {
+    width: 90%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
 }
 
-.errou {
-    color: red;
-}
-
-.acertou {
-    color: #00ff48;
-    transform: scale(1.2);
-}
-
-/* FLASH VERDE AO ACERTAR */
-.flash-verde {
-    animation: flash 0.3s;
-}
-
-@keyframes flash {
-    0% { background-color: #00ff00; }
-    100% { background-color: #111; }
-}
-
-/* ---------- GAME OVER ---------- */
-
-#gameover-bg {
+/* TELA DE PERDEU */
+#perdeu-tela {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: flex;
+    background: rgba(0,0,0,0.85);
+    display: none;     /* COMEÇA OCULTA */
     justify-content: center;
     align-items: center;
 }
 
-.hide {
-    display: none;
-}
-
-#gameover-box {
+#perdeu-caixa {
     background: #222;
-    padding: 30px;
-    border-radius: 20px;
-    width: 300px;
+    padding: 20px;
+    width: 280px;
+    border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 15px rgba(255,255,255,0.2);
 }
 
-#gameover-box h2 {
-    margin-bottom: 10px;
-}
-
-#restart-btn {
-    background: #0084ff;
-    margin-top: 15px;
-}
-
-#restart-btn:hover {
-    background: #0aa0ff;
+.hidden {
+    display: none;
 }
