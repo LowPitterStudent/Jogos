@@ -2,8 +2,9 @@ body {
     font-family: Arial;
     text-align: center;
     margin-top: 40px;
+    background: linear-gradient(180deg, #f0f8ff, #d2e7ff);
+    transition: background-color 0.3s ease;
 }
-
 #status p {
     font-size: 20px;
 }
