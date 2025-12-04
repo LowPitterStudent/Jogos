@@ -36,10 +36,6 @@ body {
 }
 
 @keyframes flash {
-    0% {
-        background-color: #00ff00;
-    }
-    100% {
-        background-color: white;
-    }
+    0% { background-color: #00ff00; }
+    100% { background-color: white; }
 }
