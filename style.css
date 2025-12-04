@@ -26,20 +26,20 @@ body {
     margin: 0 0 15px 0;
 }
 
-/* ================== STATUS (Nível, XP, Vidas) ================== */
-#status {
+/* ================== LINHAS DE STATUS ================== */
+.status-linha {
     display: flex;
-    justify-content: space-around; /* Espaço igual entre os itens */
-    margin-bottom: 20px;
+    justify-content: space-around;
+    margin-bottom: 10px;
 }
 
-#status p {
+.status-linha p {
     margin: 0;
 }
 
 /* ================== PERGUNTA ================== */
 #pergunta {
-    font-size: 24px;
+    font-size: 28px; /* maior que os status, menor que o título */
     margin-bottom: 15px;
 }
 
