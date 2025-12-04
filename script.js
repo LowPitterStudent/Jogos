@@ -1,61 +1,82 @@
-let acertos = 0;
-let erros = 0;
-let pulos = 0;
-let pontos = 0;
+let nivel = 1;
+let xp = 0;
+let vidas = 5;
 
-let numero1, numero2, respostaCorreta;
+const nivelSpan = document.getElementById("nivel");
+const xpSpan = document.getElementById("xp");
+const vidasSpan = document.getElementById("vidas");
+const perguntaDiv = document.getElementById("pergunta");
+const mensagem = document.getElementById("mensagem");
 
-function gerarConta() {
-    numero1 = Math.floor(Math.random() * 10) + 1;
-    numero2 = Math.floor(Math.random() * 10) + 1;
+const somAcerto = document.getElementById("som-acerto");
 
-    respostaCorreta = numero1 + numero2;
+let respostaCerta;
 
-    document.getElementById("conta").innerText =
-        `${numero1} + ${numero2} = ?`;
+function novaPergunta() {
+    const a = Math.floor(Math.random() * (nivel + 4)) + 1;
+    const b = Math.floor(Math.random() * (nivel + 4)) + 1;
 
-    document.getElementById("mensagem").innerText = "";
-    document.getElementById("resposta").value = "";
-}
+    const operacoes = ["+", "-", "*", "/"];
+    const op = operacoes[Math.floor(Math.random() * operacoes.length)];
 
-function verificar() {
-    let respostaUsuario = parseInt(document.getElementById("resposta").value);
-
-    if (isNaN(respostaUsuario)) {
-        document.getElementById("mensagem").innerText =
-            "Digite um número!";
+    if (op === "+") respostaCerta = a + b;
+    if (op === "-") respostaCerta = a - b;
+    if (op === "*") respostaCerta = a * b;
+    if (op === "/") {
+        respostaCerta = a;
+        perguntaDiv.innerHTML = `${a * b} ÷ ${b}`;
         return;
     }
 
-    if (respostaUsuario === respostaCorreta) {
-        acertos++;
-        pontos += 5;
-        document.getElementById("mensagem").innerText =
-            "✔ Acertou!";
+    perguntaDiv.innerHTML = `${a} ${op} ${b}`;
+}
+
+function ganharXP() {
+    let ganho = Math.floor(100 / nivel + nivel);
+    xp += ganho;
+
+    if (xp >= nivel * 120) {
+        xp = 0;
+        nivel++;
+    }
+}
+
+document.getElementById("enviar").onclick = () => {
+    const resposta = Number(document.getElementById("resposta").value);
+
+    if (resposta === respostaCerta) {
+        somAcerto.play();
+        mensagem.textContent = "Você acertou!";
+        mensagem.className = "acertou";
+        ganharXP();
     } else {
-        erros++;
-        document.getElementById("mensagem").innerText =
-            `❌ Errou! A resposta era ${respostaCorreta}`;
+        mensagem.textContent = "Você errou!";
+        mensagem.className = "errou";
+        vidas--;
+
+        if (vidas === 0) {
+            alert("Game Over!");
+            location.reload();
+        }
     }
 
-    atualizarPlacar();
-    gerarConta();
-}
+    nivelSpan.textContent = nivel;
+    xpSpan.textContent = xp;
+    vidasSpan.textContent = vidas;
 
-function pular() {
-    pulos++;
-    document.getElementById("mensagem").innerText =
-        `↪ Você pulou! A resposta era ${respostaCorreta}`;
+    document.getElementById("resposta").value = "";
 
-    atualizarPlacar();
-    gerarConta();
-}
+    setTimeout(() => {
+        mensagem.textContent = "";
+        mensagem.className = "";
+    }, 600);
 
-function atualizarPlacar() {
-    document.getElementById("acertos").innerText = acertos;
-    document.getElementById("erros").innerText = erros;
-    document.getElementById("pulos").innerText = pulos;
-    document.getElementById("pontos").innerText = pontos;
-}
+    novaPergunta();
+};
 
-gerarConta();
+document.getElementById("desistir").onclick = () => {
+    alert("Você desistiu!");
+    location.reload();
+};
+
+novaPergunta();
