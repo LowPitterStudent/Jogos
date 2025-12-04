@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Jogo de Matemática</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Jogo de Matemática</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="game-container">
+    <!-- Container principal do jogo -->
+    <div id="game-container">
 
-    <h1>Desafio Matemático</h1>
+        <h1>Jogo de Matemática</h1>
 
-    <div id="status">
-        <p>Nível: <span id="nivel">1</span></p>
-        <p>XP: <span id="xp">0</span></p>
-        <p>Vidas: <span id="vidas">5</span></p>
-        <p>Tempo: <span id="timer">40</span>s</p>
+        <div id="status">
+            <p>Nível: <span id="nivel">1</span></p>
+            <p>XP: <span id="xp">0</span></p>
+            <p>Vidas: <span id="vidas">5</span></p>
+            <p>Tempo: <span id="timer">40</span></p>
+        </div>
+
+        <div id="pergunta"></div>
+
+        <input id="resposta" type="number" placeholder="Digite sua resposta">
+
+        <button id="enviar">Enviar</button>
+        <button id="desistir">Desistir</button>
+
+        <p id="mensagem"></p>
     </div>
 
-    <div id="pergunta">...</div>
-
-    <input type="number" id="resposta" placeholder="Digite a resposta">
-    <button id="enviar">Confirmar</button>
-    <button id="desistir" class="btn-red">Desistir</button>
-
-    <p id="mensagem"></p>
-
-</div>
-
-<!-- TELA GAME OVER -->
-<div id="gameover-bg" class="hide">
-    <div id="gameover-box">
-        <h2>Você perdeu!</h2>
-        <p>Nível final: <span id="nivel-final"></span></p>
-        <p>Recorde: <span id="recorde"></span></p>
-        <button id="restart-btn">Jogar novamente</button>
+    <!-- Tela de Game Over -->
+    <div id="gameover-bg" class="hide">
+        <div id="gameover-box">
+            <h2>Você perdeu!</h2>
+            <p>Seu nível final: <span id="nivel-final"></span></p>
+            <p>Recorde: <span id="recorde"></span></p>
+            <button id="restart-btn">Jogar Novamente</button>
+        </div>
     </div>
-</div>
 
-<audio id="som-acerto" src="acerto.mp3"></audio>
+    <!-- Som -->
+    <audio id="som-acerto" src="ding-36029.mp3"></audio>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
