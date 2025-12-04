@@ -1,62 +1,117 @@
-/* ====== ESTILO GERAL ====== */
+/* ====== FUNDO ====== */
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #1e1e2f;
-    color: white;
-    text-align: center;
+    background: #0f0f0f;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ====== CONTAINER ====== */
+#game-container {
+    background: #1a1a1a;
+    width: 380px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00000080;
+    text-align: center;
 }
 
 /* ====== TÍTULO ====== */
 h1 {
-    margin-top: 30px;
-    font-size: 32px;
+    color: white;
+    margin-top: 0;
 }
 
-/* ====== PAINEL DE STATUS ====== */
+/* ====== STATUS ====== */
 #status {
-    margin-top: 15px;
-    font-size: 20px;
     display: flex;
-    justify-content: center;
-    gap: 40px;
+    justify-content: space-between;
+    margin: 20px 0;
+    padding: 10px;
 }
 
 #status p {
-    background: #2b2b40;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: #2a2a2a;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 16px;
 }
 
 /* ====== PERGUNTA ====== */
 #pergunta {
-    margin-top: 40px;
-    font-size: 45px;
-    font-weight: bold;
-    background: #292941;
-    display: inline-block;
-    padding: 15px 40px;
-    border-radius: 10px;
+    font-size: 35px;
+    color: white;
+    margin: 25px 0;
+    padding: 15px;
+    background: #2b2b2b;
+    border-radius: 12px;
 }
 
 /* ====== INPUT ====== */
 #resposta {
-    margin-top: 25px;
-    font-size: 24px;
-    padding: 8px 15px;
-    width: 160px;
+    width: 140px;
+    padding: 10px;
+    font-size: 22px;
     border-radius: 10px;
     border: none;
+    margin-bottom: 20px;
     text-align: center;
+    background: #3a3a3a;
+    color: white;
 }
 
 /* ====== BOTÕES ====== */
 button {
-    margin: 20px 10px;
-    padding: 12px 22px;
-    font-size: 20px;
-    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
     border-radius: 10px;
+    border: none;
     cursor: pointer;
-    transition: 0.2s ease-in-out
+    margin: 10px;
+    transition: 0.2s;
+    width: 140px;
+}
+
+#enviar {
+    background: white;
+    color: black;
+}
+
+#enviar:hover {
+    background: #dcdcdc;
+}
+
+#desistir {
+    background: #3a3a3a;
+    color: white;
+}
+
+#desistir:hover {
+    background: #505050;
+}
+
+/* ====== MENSAGEM ====== */
+.acertou {
+    color: #7aff7a;
+    font-size: 20px;
+}
+
+.errou {
+    color: #ff6b6b;
+    font-size: 20px;
+}
+
+/* ====== FLASH  ====== */
+.flash-verde {
+    animation: flash 0.35s ease-out;
+}
+
+@keyframes flash {
+    0% { background-color: #00ff55; }
+    100% { background-color: #1a1a1a; }
+}
