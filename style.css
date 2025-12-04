@@ -1,117 +1,75 @@
-/* ====== FUNDO ====== */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #0f0f0f;
-    margin: 0;
-    padding: 0;
+    background: #111;
+    font-family: Arial;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+}
+
+#game-container {
+    background: #222;
+    padding: 25px;
+    border-radius: 18px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 0 12px #000;
+}
+
+#pergunta {
+    font-size: 32px;
+    margin: 15px 0;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-red {
+    background: #902020;
+}
+
+#acerto {
+    color: green;
+}
+
+/* GAME OVER BACKGROUND */
+#gameover-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 }
 
-/* ====== CONTAINER CENTRAL ====== */
-#game-container {
-    background: #1a1a1a;
-    width: 380px;
+.hide {
+    display: none;
+}
+
+/* GAME OVER BOX */
+#gameover-box {
+    background: #222;
     padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px #00000080;
+    width: 260px;
+    border-radius: 18px;
     text-align: center;
+    box-shadow: 0 0 10px #000;
 }
 
-/* ====== TÍTULO ====== */
-h1 {
-    color: white;
-    margin-top: 0;
-}
-
-/* ====== STATUS ====== */
-#status {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-    padding: 10px;
-}
-
-#status p {
-    background: #2a2a2a;
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 16px;
-}
-
-/* ====== PERGUNTA ====== */
-#pergunta {
-    font-size: 35px;
-    color: white;
-    margin: 25px 0;
-    padding: 15px;
-    background: #2b2b2b;
-    border-radius: 12px;
-}
-
-/* ====== INPUT ====== */
-#resposta {
-    width: 140px;
-    padding: 10px;
-    font-size: 22px;
-    border-radius: 10px;
-    border: none;
-    margin-bottom: 20px;
-    text-align: center;
-    background: #3a3a3a;
-    color: white;
-}
-
-/* ====== BOTÕES ====== */
-button {
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    margin: 10px;
-    transition: 0.2s;
-    width: 140px;
-}
-
-#enviar {
-    background: white;
-    color: black;
-}
-
-#enviar:hover {
-    background: #dcdcdc;
-}
-
-#desistir {
-    background: #3a3a3a;
-    color: white;
-}
-
-#desistir:hover {
-    background: #505050;
-}
-
-/* ====== MENSAGEM ====== */
-.acertou {
-    color: #7aff7a;
-    font-size: 20px;
-}
-
-.errou {
-    color: #ff6b6b;
-    font-size: 20px;
-}
-
-/* ====== FLASH DE ACERTO ====== */
 .flash-verde {
-    animation: flash 0.35s ease-out;
-}
-
-@keyframes flash {
-    0% { background-color: #00ff55; }
-    100% { background-color: #1a1a1a; }
+    background: #003300 !important;
 }
