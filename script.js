@@ -1,200 +1,166 @@
+// Elementos
+const nivelEl = document.getElementById("nivel");
+const xpEl = document.getElementById("xp");
+const vidasEl = document.getElementById("vidas");
+const perguntaEl = document.getElementById("pergunta");
+const respostaEl = document.getElementById("resposta");
+const mensagemEl = document.getElementById("mensagem");
+const enviarEl = document.getElementById("enviar");
+const desistirEl = document.getElementById("desistir");
+const somAcerto = document.getElementById("som-acerto");
+
 let nivel = 1;
 let xp = 0;
 let vidas = 5;
+let respostaCorreta = 0;
+let recorde = localStorage.getItem("recordeMath") || 0;
 
-const nivelSpan = document.getElementById("nivel");
-const xpSpan = document.getElementById("xp");
-const vidasSpan = document.getElementById("vidas");
-const perguntaDiv = document.getElementById("pergunta");
-const mensagem = document.getElementById("mensagem");
-const respostaEl = document.getElementById("resposta");
-const somAcerto = document.getElementById("som-acerto");
-
+// ⏳ CRONÔMETRO
 let tempo = 40;
-let timerInterval = null;
+let intervaloTempo;
 
-const gameOverBG = document.getElementById("gameover-bg");
-const nivelFinalSpan = document.getElementById("nivel-final");
-const recordeSpan = document.getElementById("recorde");
+// 🟥 TELA DE PERDEU
+const perdeuTela = document.createElement("div");
+perdeuTela.id = "perdeu-tela";
+perdeuTela.style.position = "fixed";
+perdeuTela.style.top = "0";
+perdeuTela.style.left = "0";
+perdeuTela.style.width = "100%";
+perdeuTela.style.height = "100%";
+perdeuTela.style.background = "rgba(0,0,0,0.8)";
+perdeuTela.style.display = "none";
+perdeuTela.style.justifyContent = "center";
+perdeuTela.style.alignItems = "center";
+perdeuTela.style.zIndex = "999";
 
-let respostaCerta = null;
+perdeuTela.innerHTML = `
+    <div style="background:#222; padding:30px; border-radius:15px; text-align:center; width:300px; color:white;">
+        <h2>Você perdeu!</h2>
+        <p id="texto-pontuacao"></p>
+        <button id="btn-reiniciar" style="
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;">
+            Jogar novamente
+        </button>
+    </div>
+`;
+document.body.appendChild(perdeuTela);
 
-// Recorde salvo
-let recorde = Number(localStorage.getItem("recordMath")) || 0;
+// FUNÇÃO → Gerar nova conta
+function gerarConta() {
+    let max = nivel * 10;
+    let n1 = Math.floor(Math.random() * max);
+    let n2 = Math.floor(Math.random() * max);
+    respostaCorreta = n1 + n2;
 
-/* ---------------- TIMER ---------------- */
-
-function atualizarTimerDisplay() {
-    document.getElementById("timer").textContent = tempo;
-}
-
-function iniciarTimer() {
-    clearInterval(timerInterval);
-    tempo = 40;
-    atualizarTimerDisplay();
-
-    timerInterval = setInterval(() => {
-        tempo--;
-        atualizarTimerDisplay();
-        if (tempo <= 0) {
-            clearInterval(timerInterval);
-            mostrarGameOver();
-        }
-    }, 1000);
-}
-
-function pararTimer() {
-    clearInterval(timerInterval);
-}
-
-/* ---------------- PERGUNTAS ---------------- */
-
-function novaPergunta() {
-    const limite = nivel * 10;
-
-    const a = Math.floor(Math.random() * (limite + 1));
-    const b = Math.floor(Math.random() * (limite + 1));
-
-    const ops = ["+", "-", "*", "/"];
-    const op = ops[Math.floor(Math.random() * ops.length)];
-
-    if (op === "+") {
-        respostaCerta = a + b;
-        perguntaDiv.textContent = `${a} + ${b}`;
-    } else if (op === "-") {
-        respostaCerta = a - b;
-        perguntaDiv.textContent = `${a} - ${b}`;
-    } else if (op === "*") {
-        respostaCerta = a * b;
-        perguntaDiv.textContent = `${a} × ${b}`;
-    } else {
-        if (b === 0) return novaPergunta();
-        respostaCerta = a;
-        perguntaDiv.textContent = `${a * b} ÷ ${b}`;
-    }
+    perguntaEl.textContent = `${n1} + ${n2} = ?`;
 
     respostaEl.value = "";
     respostaEl.focus();
-    setTimeout(() => respostaEl.focus(), 20);
 
-    iniciarTimer();
+    // reseta o tempo da rodada
+    tempo = 40;
 }
 
-/* ---------------- EFEITOS ---------------- */
-
-function efeitoAcerto() {
-    somAcerto.currentTime = 0;
-    somAcerto.play().catch(()=>{});
-
-    document.body.classList.add("flash-verde");
-    setTimeout(() => document.body.classList.remove("flash-verde"), 250);
+// FUNÇÃO → Atualizar info
+function atualizarStatus() {
+    nivelEl.textContent = nivel;
+    xpEl.textContent = xp;
+    vidasEl.textContent = vidas;
 }
 
-/* ---------------- XP ---------------- */
-
-function ganharXP() {
-    const ganho = Math.floor(100 / nivel + nivel);
-    xp += ganho;
-
-    if (xp >= nivel * 120) {
-        xp = 0;
-        nivel++;
-    }
-}
-
-function atualizarPlacar() {
-    nivelSpan.textContent = nivel;
-    xpSpan.textContent = xp;
-    vidasSpan.textContent = vidas;
-}
-
-/* ---------------- GAME OVER ---------------- */
-
-function mostrarGameOver() {
-    pararTimer();
+// FUNÇÃO → Perdeu jogo
+function perdeuJogo() {
+    clearInterval(intervaloTempo);
 
     // atualiza recorde
     if (nivel > recorde) {
         recorde = nivel;
-        localStorage.setItem("recordMath", recorde);
+        localStorage.setItem("recordeMath", recorde);
     }
 
-    nivelFinalSpan.textContent = nivel;
-    recordeSpan.textContent = recorde;
+    document.getElementById("texto-pontuacao").textContent =
+        `Pontuação: Nível ${nivel} | Recorde: ${recorde}`;
 
-    gameOverBG.classList.remove("hide");
-    document.getElementById("game-container").style.pointerEvents = "none";
+    perdeuTela.style.display = "flex";
 }
 
-function fecharGameOver() {
-    gameOverBG.classList.add("hide");
-    document.getElementById("game-container").style.pointerEvents = "auto";
-}
+// FUNÇÃO → Verificar resposta
+function verificar() {
+    let resposta = Number(respostaEl.value);
 
-function reiniciarJogo() {
-    nivel = 1;
-    xp = 0;
-    vidas = 5;
-    tempo = 40;
-    atualizarPlacar();
-    fecharGameOver();
-    novaPergunta();
-}
+    if (resposta === respostaCorreta) {
+        mensagemEl.textContent = "Acertou!";
+        mensagemEl.style.color = "lime";
+        somAcerto.play();
 
-/* ---------------- CHECAR RESPOSTA ---------------- */
+        xp += 10;
 
-function checarResposta() {
-    const raw = respostaEl.value.trim();
-
-    if (raw === "") {
-        mensagem.textContent = "Digite um número!";
-        mensagem.className = "errou";
-        setTimeout(() => mensagem.textContent = "", 700);
-        return;
-    }
-
-    const resposta = Number(raw);
-
-    if (resposta === respostaCerta) {
-        mensagem.textContent = "Você acertou!";
-        mensagem.className = "acertou";
-        efeitoAcerto();
-        ganharXP();
+        if (xp >= 50) {
+            xp = 0;
+            nivel++;
+        }
     } else {
-        mensagem.textContent = `Você errou! Era ${respostaCerta}`;
-        mensagem.className = "errou";
+        mensagemEl.textContent = "Errou!";
+        mensagemEl.style.color = "red";
         vidas--;
+
         if (vidas <= 0) {
-            atualizarPlacar();
-            mostrarGameOver();
+            perdeuJogo();
             return;
         }
     }
 
-    atualizarPlacar();
-
-    setTimeout(() => {
-        mensagem.textContent = "";
-        novaPergunta();
-    }, 700);
+    atualizarStatus();
+    gerarConta();
 }
 
-/* ---------------- EVENTOS ---------------- */
+// BOTÃO ENVIAR
+enviarEl.onclick = verificar;
 
-document.getElementById("enviar").onclick = checarResposta;
-
+// ENTER também envia
 respostaEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        checarResposta();
-    }
+    if (e.key === "Enter") verificar();
 });
 
-document.getElementById("desistir").onclick = mostrarGameOver;
+// DESISTIR
+desistirEl.onclick = perdeuJogo;
 
-document.getElementById("restart-btn").onclick = reiniciarJogo;
+// CRONÔMETRO
+function iniciarTempo() {
+    intervaloTempo = setInterval(() => {
+        tempo--;
 
-/* ---------------- INÍCIO ---------------- */
+        // Mostrando no título da aba (legal!)
+        document.title = `⏳ ${tempo}s - Jogo`;
 
-atualizarPlacar();
-novaPergunta();
+        if (tempo <= 0) {
+            perdeuJogo();
+        }
+    }, 1000);
+}
+
+// BOTÃO → Jogar novamente
+document.getElementById("btn-reiniciar").onclick = () => {
+    perdeuTela.style.display = "none";
+
+    nivel = 1;
+    vidas = 5;
+    xp = 0;
+
+    atualizarStatus();
+    gerarConta();
+
+    tempo = 40;
+    iniciarTempo();
+};
+
+// INICIAR JOGO
+atualizarStatus();
+gerarConta();
+iniciarTempo();
