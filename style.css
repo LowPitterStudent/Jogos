@@ -10,7 +10,7 @@ body {
     height: 100vh;
 }
 
-/* ====== CONTAINER ====== */
+/* ====== CONTAINER CENTRAL ====== */
 #game-container {
     background: #1a1a1a;
     width: 380px;
@@ -106,7 +106,7 @@ button {
     font-size: 20px;
 }
 
-/* ====== FLASH  ====== */
+/* ====== FLASH DE ACERTO ====== */
 .flash-verde {
     animation: flash 0.35s ease-out;
 }
