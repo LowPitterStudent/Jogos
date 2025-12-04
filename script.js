@@ -54,7 +54,7 @@ function novaPergunta() {
 /* ------------------- TEMPO -------------------- */
 function iniciarTempo() {
     clearInterval(intervalo);
-    tempoSpan.textContent = tempo; // mostra tempo atual
+    tempoSpan.textContent = tempo;
 
     intervalo = setInterval(() => {
         if (jogoTravado || pausado) return;
@@ -98,7 +98,7 @@ function ganharXP() {
 /* ------------------- ENVIAR RESPOSTA -------------------- */
 function enviarResposta() {
     if (jogoTravado || pausado) return;
-    if (respostaInput.value.trim() === "") return; // impede envio vazio
+    if (respostaInput.value.trim() === "") return;
 
     const r = Number(respostaInput.value);
 
@@ -107,8 +107,7 @@ function enviarResposta() {
         somAcerto.play().catch(() => {});
         ganharXP();
 
-        // ADICIONA 40 SEGUNDOS AO TEMPO ATUAL
-        tempo += 40;
+        tempo += 40; // acumula +40s
         tempoSpan.textContent = tempo;
     } else {
         vidas--;
@@ -121,7 +120,7 @@ function enviarResposta() {
     iniciarTempo();
 }
 
-/* ------------------- ATUALIZAR TELAS -------------------- */
+/* ------------------- ATUALIZAR -------------------- */
 function atualizar() {
     nivelSpan.textContent = nivel;
     xpSpan.textContent = xp;
@@ -166,7 +165,7 @@ function togglePausa() {
 /* ------------------- BOTÃO DE PAUSA -------------------- */
 const botaoPausa = document.createElement("button");
 botaoPausa.textContent = "Pausar / Continuar";
-botaoPausa.id = "botao-pausa"; // ID para CSS
+botaoPausa.id = "botao-pausa";
 botaoPausa.onclick = togglePausa;
 gameContainer.appendChild(botaoPausa);
 
