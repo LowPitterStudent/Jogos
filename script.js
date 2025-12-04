@@ -1,166 +1,143 @@
-// Elementos
-const nivelEl = document.getElementById("nivel");
-const xpEl = document.getElementById("xp");
-const vidasEl = document.getElementById("vidas");
-const perguntaEl = document.getElementById("pergunta");
-const respostaEl = document.getElementById("resposta");
-const mensagemEl = document.getElementById("mensagem");
-const enviarEl = document.getElementById("enviar");
-const desistirEl = document.getElementById("desistir");
-const somAcerto = document.getElementById("som-acerto");
-
 let nivel = 1;
 let xp = 0;
 let vidas = 5;
-let respostaCorreta = 0;
-let recorde = localStorage.getItem("recordeMath") || 0;
-
-// ⏳ CRONÔMETRO
 let tempo = 40;
-let intervaloTempo;
+let intervalo;
 
-// 🟥 TELA DE PERDEU
-const perdeuTela = document.createElement("div");
-perdeuTela.id = "perdeu-tela";
-perdeuTela.style.position = "fixed";
-perdeuTela.style.top = "0";
-perdeuTela.style.left = "0";
-perdeuTela.style.width = "100%";
-perdeuTela.style.height = "100%";
-perdeuTela.style.background = "rgba(0,0,0,0.8)";
-perdeuTela.style.display = "none";
-perdeuTela.style.justifyContent = "center";
-perdeuTela.style.alignItems = "center";
-perdeuTela.style.zIndex = "999";
+const nivelSpan = document.getElementById("nivel");
+const xpSpan = document.getElementById("xp");
+const vidasSpan = document.getElementById("vidas");
+const tempoSpan = document.getElementById("tempo");
+const perguntaDiv = document.getElementById("pergunta");
+const respostaInput = document.getElementById("resposta");
+const mensagem = document.getElementById("mensagem");
 
-perdeuTela.innerHTML = `
-    <div style="background:#222; padding:30px; border-radius:15px; text-align:center; width:300px; color:white;">
-        <h2>Você perdeu!</h2>
-        <p id="texto-pontuacao"></p>
-        <button id="btn-reiniciar" style="
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: white;
-            color: black;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;">
-            Jogar novamente
-        </button>
-    </div>
-`;
-document.body.appendChild(perdeuTela);
+const perdeuTela = document.getElementById("perdeu-tela");
+const nivelFinal = document.getElementById("nivel-final");
+const recordeSpan = document.getElementById("recorde");
+const somAcerto = document.getElementById("som-acerto");
 
-// FUNÇÃO → Gerar nova conta
-function gerarConta() {
+let respostaCerta;
+
+// ----- RECORD -----
+let recorde = localStorage.getItem("recorde") || 0;
+
+// ----- NOVA PERGUNTA -----
+function novaPergunta() {
     let max = nivel * 10;
-    let n1 = Math.floor(Math.random() * max);
-    let n2 = Math.floor(Math.random() * max);
-    respostaCorreta = n1 + n2;
 
-    perguntaEl.textContent = `${n1} + ${n2} = ?`;
+    const a = Math.floor(Math.random() * max) + 1;
+    const b = Math.floor(Math.random() * max) + 1;
 
-    respostaEl.value = "";
-    respostaEl.focus();
+    const ops = ["+", "-", "*", "/"];
+    const op = ops[Math.floor(Math.random() * ops.length)];
 
-    // reseta o tempo da rodada
-    tempo = 40;
-}
-
-// FUNÇÃO → Atualizar info
-function atualizarStatus() {
-    nivelEl.textContent = nivel;
-    xpEl.textContent = xp;
-    vidasEl.textContent = vidas;
-}
-
-// FUNÇÃO → Perdeu jogo
-function perdeuJogo() {
-    clearInterval(intervaloTempo);
-
-    // atualiza recorde
-    if (nivel > recorde) {
-        recorde = nivel;
-        localStorage.setItem("recordeMath", recorde);
-    }
-
-    document.getElementById("texto-pontuacao").textContent =
-        `Pontuação: Nível ${nivel} | Recorde: ${recorde}`;
-
-    perdeuTela.style.display = "flex";
-}
-
-// FUNÇÃO → Verificar resposta
-function verificar() {
-    let resposta = Number(respostaEl.value);
-
-    if (resposta === respostaCorreta) {
-        mensagemEl.textContent = "Acertou!";
-        mensagemEl.style.color = "lime";
-        somAcerto.play();
-
-        xp += 10;
-
-        if (xp >= 50) {
-            xp = 0;
-            nivel++;
-        }
+    if (op === "+") {
+        respostaCerta = a + b;
+        perguntaDiv.textContent = `${a} + ${b}`;
+    } else if (op === "-") {
+        respostaCerta = a - b;
+        perguntaDiv.textContent = `${a} - ${b}`;
+    } else if (op === "*") {
+        respostaCerta = a * b;
+        perguntaDiv.textContent = `${a} × ${b}`;
     } else {
-        mensagemEl.textContent = "Errou!";
-        mensagemEl.style.color = "red";
-        vidas--;
-
-        if (vidas <= 0) {
-            perdeuJogo();
-            return;
-        }
+        respostaCerta = a;
+        perguntaDiv.textContent = `${a * b} ÷ ${b}`;
     }
 
-    atualizarStatus();
-    gerarConta();
+    respostaInput.focus();
 }
 
-// BOTÃO ENVIAR
-enviarEl.onclick = verificar;
-
-// ENTER também envia
-respostaEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") verificar();
-});
-
-// DESISTIR
-desistirEl.onclick = perdeuJogo;
-
-// CRONÔMETRO
+// ----- CONTADOR -----
 function iniciarTempo() {
-    intervaloTempo = setInterval(() => {
-        tempo--;
+    clearInterval(intervalo);
+    tempo = 40;
+    tempoSpan.textContent = tempo;
 
-        // Mostrando no título da aba (legal!)
-        document.title = `⏳ ${tempo}s - Jogo`;
+    intervalo = setInterval(() => {
+        tempo--;
+        tempoSpan.textContent = tempo;
 
         if (tempo <= 0) {
-            perdeuJogo();
+            perder();
         }
     }, 1000);
 }
 
-// BOTÃO → Jogar novamente
-document.getElementById("btn-reiniciar").onclick = () => {
-    perdeuTela.style.display = "none";
+// ----- FUNÇÃO PERDER -----
+function perder() {
+    clearInterval(intervalo);
 
-    nivel = 1;
-    vidas = 5;
-    xp = 0;
+    nivelFinal.textContent = nivel;
+
+    if (nivel > recorde) {
+        recorde = nivel;
+        localStorage.setItem("recorde", recorde);
+    }
+
+    recordeSpan.textContent = recorde;
+
+    perdeuTela.style.display = "flex";
+}
+
+// ----- GANHAR XP -----
+function ganharXP() {
+    xp += Math.floor(100 / nivel + nivel);
+
+    if (xp >= nivel * 120) {
+        xp = 0;
+        nivel++;
+    }
+}
+
+// ----- ENVIAR RESPOSTA -----
+document.getElementById("enviar").onclick = enviarResposta;
+
+function enviarResposta() {
+    const r = Number(respostaInput.value);
+
+    if (r === respostaCerta) {
+        somAcerto.play().catch(() => {});
+        ganharXP();
+    } else {
+        vidas--;
+        if (vidas <= 0) perder();
+    }
 
     atualizarStatus();
-    gerarConta();
+    respostaInput.value = "";
+    novaPergunta();
+    iniciarTempo();
+}
 
-    tempo = 40;
+// ENTER para confirmar
+respostaInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") enviarResposta();
+});
+
+// ----- BOTÃO DESISTIR -----
+document.getElementById("desistir").onclick = perder;
+
+// ----- JOGAR NOVAMENTE -----
+document.getElementById("jogar-novamente").onclick = () => {
+    perdeuTela.style.display = "none";
+    nivel = 1;
+    xp = 0;
+    vidas = 5;
+    atualizarStatus();
+    novaPergunta();
     iniciarTempo();
 };
 
-// INICIAR JOGO
+// ----- ATUALIZAR TELA -----
+function atualizarStatus() {
+    nivelSpan.textContent = nivel;
+    xpSpan.textContent = xp;
+    vidasSpan.textContent = vidas;
+}
+
+// ----- INÍCIO -----
 atualizarStatus();
-gerarConta();
+novaPergunta();
 iniciarTempo();
