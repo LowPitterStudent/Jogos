@@ -32,9 +32,12 @@ function novaPergunta() {
         respostaCerta = a;
         perguntaDiv.innerHTML = `${a * b} ÷ ${b}`;
     }
+
+    // >>> Focar o input automaticamente <<<
+    document.getElementById("resposta").focus();
 }
 
-// --- SOM + FLASH DE ACERTO ---
+// --- ANIMAÇÃO + SOM DE ACERTO ---
 function efeitoAcerto() {
     somAcerto.currentTime = 0;
     somAcerto.play().catch(() => {});
@@ -104,7 +107,14 @@ document.getElementById("enviar").onclick = () => {
     }, 700);
 };
 
-// --- DESISTIR ---
+// --- Permitir envio com ENTER ---
+document.getElementById("resposta").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("enviar").click();
+    }
+});
+
+// --- BOTÃO DESISTIR ---
 document.getElementById("desistir").onclick = () => {
     alert(`Você desistiu! Nível ${nivel}, XP ${xp}, Vidas ${vidas}`);
     location.reload();
