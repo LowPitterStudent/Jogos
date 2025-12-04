@@ -30,3 +30,15 @@ body {
     color: red;
     transform: scale(1.2);
 }
+.flash-verde {
+    animation: flash 0.4s ease-out;
+}
+
+@keyframes flash {
+    0% {
+        background-color: #00ff00;
+    }
+    100% {
+        background-color: white;
+    }
+}
