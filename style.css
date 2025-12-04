@@ -1,65 +1,69 @@
+/* CENTRALIZA A TELA */
 body {
+    margin: 0;
+    padding: 0;
     background: #111;
     font-family: Arial, sans-serif;
     color: white;
+
     display: flex;
     justify-content: center;
-    padding-top: 40px;
+    align-items: center;
+
+    height: 100vh; /* CENTRALIZA DE VERDADE */
 }
 
 #game-container {
     width: 320px;
-    background: #1e1e1e;
     padding: 20px;
+    background: #1e1e1e;
     border-radius: 15px;
     text-align: center;
 }
 
+/* BOTÕES */
 button {
+    padding: 10px;
+    margin: 5px;
+    width: 130px;
+    border: none;
+    border-radius: 10px;
     background: #444;
     color: white;
-    border: none;
-    padding: 10px;
-    width: 120px;
-    margin: 5px;
-    border-radius: 10px;
     cursor: pointer;
 }
-
 button:hover {
     background: #666;
 }
 
+/* INPUT */
 input {
     width: 90%;
     padding: 10px;
-    margin-top: 10px;
     border-radius: 10px;
     border: none;
-    outline: none;
+    margin-top: 10px;
 }
 
-/* TELA DE PERDEU */
+/* ====== TELA DE DERROTA ====== */
 #perdeu-tela {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: none;     /* COMEÇA OCULTA */
+
+    display: none;     /* <---- ESSENCIAL */
     justify-content: center;
     align-items: center;
+
+    background: rgba(0,0,0,0.85);
 }
 
 #perdeu-caixa {
     background: #222;
-    padding: 20px;
-    width: 280px;
+    padding: 25px;
+    width: 260px;
     border-radius: 15px;
     text-align: center;
-}
-
-.hidden {
-    display: none;
 }
