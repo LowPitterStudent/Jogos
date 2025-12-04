@@ -15,8 +15,8 @@ let respostaCerta;
 
 // --- EXIBE UMA NOVA PERGUNTA ---
 function novaPergunta() {
-    const a = Math.floor(Math.random() * (nivel + 4)) + 1;
-    const b = Math.floor(Math.random() * (nivel + 4)) + 1;
+    const a = Math.floor(Math.random() * (nivel + 10)) + 1;
+    const b = Math.floor(Math.random() * (nivel + 10)) + 1;
 
     const operacoes = ["+", "-", "*", "/"];
     const op = operacoes[Math.floor(Math.random() * operacoes.length)];
