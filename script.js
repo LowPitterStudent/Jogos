@@ -1,9 +1,11 @@
+/* ------------------- VARIÁVEIS -------------------- */
 let nivel = 1;
 let xp = 0;
 let vidas = 5;
 let tempo = 40;
 let intervalo;
 let jogoTravado = false;
+let pausado = false;
 
 const nivelSpan = document.getElementById("nivel");
 const xpSpan = document.getElementById("xp");
@@ -16,11 +18,11 @@ const mensagem = document.getElementById("mensagem");
 const perdeuTela = document.getElementById("perdeu-tela");
 const nivelFinal = document.getElementById("nivel-final");
 const recordeSpan = document.getElementById("recorde");
+const gameContainer = document.getElementById("game-container");
 
 const somAcerto = document.getElementById("som-acerto");
 
 let respostaCerta;
-
 let recorde = localStorage.getItem("recorde") || 0;
 
 /* ------------------- NOVA PERGUNTA -------------------- */
@@ -41,7 +43,7 @@ function novaPergunta() {
     } else if (op === "*") {
         respostaCerta = a * b;
         perguntaDiv.textContent = `${a} × ${b}`;
-    } else {
+    } else { // divisão
         respostaCerta = a;
         perguntaDiv.textContent = `${a * b} ÷ ${b}`;
     }
@@ -56,7 +58,7 @@ function iniciarTempo() {
     tempoSpan.textContent = tempo;
 
     intervalo = setInterval(() => {
-        if (jogoTravado) return;
+        if (jogoTravado || pausado) return;
         tempo--;
         tempoSpan.textContent = tempo;
 
@@ -80,6 +82,7 @@ function perder() {
 
     recordeSpan.textContent = recorde;
 
+    gameContainer.style.display = "none";
     perdeuTela.style.display = "flex";
 }
 
@@ -95,7 +98,8 @@ function ganharXP() {
 
 /* ------------------- ENVIAR RESPOSTA -------------------- */
 function enviarResposta() {
-    if (jogoTravado) return;
+    if (jogoTravado || pausado) return;
+    if (respostaInput.value.trim() === "") return; // impede envio vazio
 
     const r = Number(respostaInput.value);
 
@@ -105,7 +109,7 @@ function enviarResposta() {
         ganharXP();
     } else {
         vidas--;
-        if (vidas <= 0) return perder();
+        if (vidas < 1) return perder();
     }
 
     atualizar();
@@ -114,36 +118,53 @@ function enviarResposta() {
     iniciarTempo();
 }
 
+/* ------------------- ATUALIZAR TELAS -------------------- */
+function atualizar() {
+    nivelSpan.textContent = nivel;
+    xpSpan.textContent = xp;
+    vidasSpan.textContent = vidas;
+}
+
+/* ------------------- EVENTOS -------------------- */
 document.getElementById("enviar").onclick = enviarResposta;
 
-/* ENTER confirma */
 respostaInput.addEventListener("keydown", e => {
     if (e.key === "Enter") enviarResposta();
 });
 
-/* ------------------- DESISTIR -------------------- */
 document.getElementById("desistir").onclick = perder;
 
-/* ------------------- JOGAR NOVAMENTE -------------------- */
 document.getElementById("jogar-novamente").onclick = () => {
     perdeuTela.style.display = "none";
+    gameContainer.style.display = "flex";
 
     nivel = 1;
     xp = 0;
     vidas = 5;
     jogoTravado = false;
+    pausado = false;
 
     atualizar();
     novaPergunta();
     iniciarTempo();
 };
 
-/* ------------------- ATUALIZAR -------------------- */
-function atualizar() {
-    nivelSpan.textContent = nivel;
-    xpSpan.textContent = xp;
-    vidasSpan.textContent = vidas;
+/* ------------------- PAUSA -------------------- */
+function togglePausa() {
+    pausado = !pausado;
+    if (pausado) {
+        mensagem.textContent = "Jogo pausado!";
+    } else {
+        mensagem.textContent = "";
+    }
 }
+
+/* ------------------- BOTÃO DE PAUSA -------------------- */
+const botaoPausa = document.createElement("button");
+botaoPausa.textContent = "Pausar / Continuar";
+botaoPausa.id = "botao-pausa"; // ID para CSS
+botaoPausa.onclick = togglePausa;
+gameContainer.appendChild(botaoPausa);
 
 /* ------------------- INÍCIO -------------------- */
 atualizar();
