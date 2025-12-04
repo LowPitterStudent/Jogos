@@ -7,41 +7,50 @@ const xpSpan = document.getElementById("xp");
 const vidasSpan = document.getElementById("vidas");
 const perguntaDiv = document.getElementById("pergunta");
 const mensagem = document.getElementById("mensagem");
+const respostaEl = document.getElementById("resposta");
 const somAcerto = document.getElementById("som-acerto");
 
 let tempo = 40;
-let timerInterval;
+let timerInterval = null;
 
 const gameOverBG = document.getElementById("gameover-bg");
 const nivelFinalSpan = document.getElementById("nivel-final");
 const recordeSpan = document.getElementById("recorde");
 
-let respostaCerta;
+let respostaCerta = null;
 
+// Recorde salvo
 let recorde = Number(localStorage.getItem("recordMath")) || 0;
 
-function atualizarTimer() {
+/* ---------------- TIMER ---------------- */
+
+function atualizarTimerDisplay() {
     document.getElementById("timer").textContent = tempo;
 }
 
 function iniciarTimer() {
     clearInterval(timerInterval);
     tempo = 40;
-    atualizarTimer();
+    atualizarTimerDisplay();
 
     timerInterval = setInterval(() => {
-        tempo++;
-        atualizarTimer();
-
-        if (tempo >= 100) {
+        tempo--;
+        atualizarTimerDisplay();
+        if (tempo <= 0) {
             clearInterval(timerInterval);
             mostrarGameOver();
         }
     }, 1000);
 }
 
+function pararTimer() {
+    clearInterval(timerInterval);
+}
+
+/* ---------------- PERGUNTAS ---------------- */
+
 function novaPergunta() {
-    let limite = nivel * 10;
+    const limite = nivel * 10;
 
     const a = Math.floor(Math.random() * (limite + 1));
     const b = Math.floor(Math.random() * (limite + 1));
@@ -59,27 +68,32 @@ function novaPergunta() {
         respostaCerta = a * b;
         perguntaDiv.textContent = `${a} × ${b}`;
     } else {
-        if (b === 0) { novaPergunta(); return; }
+        if (b === 0) return novaPergunta();
         respostaCerta = a;
         perguntaDiv.textContent = `${a * b} ÷ ${b}`;
     }
 
-    document.getElementById("resposta").value = "";
-    document.getElementById("resposta").focus();
+    respostaEl.value = "";
+    respostaEl.focus();
+    setTimeout(() => respostaEl.focus(), 20);
 
     iniciarTimer();
 }
 
+/* ---------------- EFEITOS ---------------- */
+
 function efeitoAcerto() {
     somAcerto.currentTime = 0;
-    somAcerto.play().catch(() => {});
+    somAcerto.play().catch(()=>{});
 
     document.body.classList.add("flash-verde");
-    setTimeout(() => document.body.classList.remove("flash-verde"), 300);
+    setTimeout(() => document.body.classList.remove("flash-verde"), 250);
 }
 
+/* ---------------- XP ---------------- */
+
 function ganharXP() {
-    let ganho = Math.floor(100 / nivel + nivel);
+    const ganho = Math.floor(100 / nivel + nivel);
     xp += ganho;
 
     if (xp >= nivel * 120) {
@@ -88,9 +102,18 @@ function ganharXP() {
     }
 }
 
-function mostrarGameOver() {
-    clearInterval(timerInterval);
+function atualizarPlacar() {
+    nivelSpan.textContent = nivel;
+    xpSpan.textContent = xp;
+    vidasSpan.textContent = vidas;
+}
 
+/* ---------------- GAME OVER ---------------- */
+
+function mostrarGameOver() {
+    pararTimer();
+
+    // atualiza recorde
     if (nivel > recorde) {
         recorde = nivel;
         localStorage.setItem("recordMath", recorde);
@@ -103,45 +126,75 @@ function mostrarGameOver() {
     document.getElementById("game-container").style.pointerEvents = "none";
 }
 
-document.getElementById("enviar").onclick = () => {
-    const resposta = Number(document.getElementById("resposta").value);
+function fecharGameOver() {
+    gameOverBG.classList.add("hide");
+    document.getElementById("game-container").style.pointerEvents = "auto";
+}
+
+function reiniciarJogo() {
+    nivel = 1;
+    xp = 0;
+    vidas = 5;
+    tempo = 40;
+    atualizarPlacar();
+    fecharGameOver();
+    novaPergunta();
+}
+
+/* ---------------- CHECAR RESPOSTA ---------------- */
+
+function checarResposta() {
+    const raw = respostaEl.value.trim();
+
+    if (raw === "") {
+        mensagem.textContent = "Digite um número!";
+        mensagem.className = "errou";
+        setTimeout(() => mensagem.textContent = "", 700);
+        return;
+    }
+
+    const resposta = Number(raw);
 
     if (resposta === respostaCerta) {
         mensagem.textContent = "Você acertou!";
-        mensagem.style.color = "lightgreen";
-
+        mensagem.className = "acertou";
         efeitoAcerto();
         ganharXP();
-
     } else {
         mensagem.textContent = `Você errou! Era ${respostaCerta}`;
-        mensagem.style.color = "red";
-
+        mensagem.className = "errou";
         vidas--;
-        vidasSpan.textContent = vidas;
-
         if (vidas <= 0) {
+            atualizarPlacar();
             mostrarGameOver();
             return;
         }
     }
 
-    xpSpan.textContent = xp;
-    nivelSpan.textContent = nivel;
+    atualizarPlacar();
 
     setTimeout(() => {
         mensagem.textContent = "";
         novaPergunta();
     }, 700);
-};
+}
 
-document.addEventListener("keydown", e => {
+/* ---------------- EVENTOS ---------------- */
+
+document.getElementById("enviar").onclick = checarResposta;
+
+respostaEl.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        document.getElementById("enviar").click();
+        e.preventDefault();
+        checarResposta();
     }
 });
 
-document.getElementById("desistir").onclick = () => mostrarGameOver();
-document.getElementById("restart-btn").onclick = () => location.reload();
+document.getElementById("desistir").onclick = mostrarGameOver;
 
+document.getElementById("restart-btn").onclick = reiniciarJogo;
+
+/* ---------------- INÍCIO ---------------- */
+
+atualizarPlacar();
 novaPergunta();
