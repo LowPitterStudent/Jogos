@@ -7,53 +7,85 @@ const xpSpan = document.getElementById("xp");
 const vidasSpan = document.getElementById("vidas");
 const perguntaDiv = document.getElementById("pergunta");
 const mensagem = document.getElementById("mensagem");
-const respostaInput = document.getElementById("resposta");
-
 const somAcerto = document.getElementById("som-acerto");
+
+// TIMER
+let tempo = 40;
+let timerInterval;
+
+// GAME OVER
+const gameOverBG = document.getElementById("gameover-bg");
+const nivelFinalSpan = document.getElementById("nivel-final");
+const recordeSpan = document.getElementById("recorde");
 
 let respostaCerta;
 
-// --- EXIBE UMA NOVA PERGUNTA ---
-function novaPergunta() {
-    const a = Math.floor(Math.random() * (nivel + 10)) + 1;
-    const b = Math.floor(Math.random() * (nivel + 10)) + 1;
+// RECORD LOCAL
+let recorde = Number(localStorage.getItem("recordeMath")) || 0;
 
-    const operacoes = ["+", "-", "*", "/"];
-    const op = operacoes[Math.floor(Math.random() * operacoes.length)];
+function atualizarTimer() {
+    if (document.getElementById("timer")) {
+        document.getElementById("timer").textContent = tempo;
+    }
+}
+
+function iniciarTimer() {
+    clearInterval(timerInterval);
+    tempo = 40;
+    atualizarTimer();
+
+    timerInterval = setInterval(() => {
+        tempo--;
+        atualizarTimer();
+
+        if (tempo <= 0) {
+            clearInterval(timerInterval);
+            mostrarGameOver();
+        }
+    }, 1000);
+}
+
+// NOVA PERGUNTA
+function novaPergunta() {
+    let limite = nivel * 10;
+
+    const a = Math.floor(Math.random() * (limite + 1));
+    const b = Math.floor(Math.random() * (limite + 1));
+
+    const ops = ["+", "-", "*", "/"];
+    const op = ops[Math.floor(Math.random() * ops.length)];
 
     if (op === "+") {
         respostaCerta = a + b;
-        perguntaDiv.innerHTML = `${a} + ${b}`;
+        perguntaDiv.textContent = `${a} + ${b}`;
     } else if (op === "-") {
         respostaCerta = a - b;
-        perguntaDiv.innerHTML = `${a} - ${b}`;
+        perguntaDiv.textContent = `${a} - ${b}`;
     } else if (op === "*") {
         respostaCerta = a * b;
-        perguntaDiv.innerHTML = `${a} × ${b}`;
+        perguntaDiv.textContent = `${a} × ${b}`;
     } else {
+        if (b === 0) { novaPergunta(); return; }
         respostaCerta = a;
-        perguntaDiv.innerHTML = `${a * b} ÷ ${b}`;
+        perguntaDiv.textContent = `${a * b} ÷ ${b}`;
     }
 
-    // Sempre foca no input assim que a conta aparece
-    respostaInput.focus();
+    document.getElementById("resposta").focus();
+    iniciarTimer();
 }
 
-// --- ANIMAÇÃO + SOM DE ACERTO ---
+// SOM + FLASH
 function efeitoAcerto() {
     if (somAcerto) {
         somAcerto.currentTime = 0;
-        somAcerto.play().catch(() => {});
+        somAcerto.play().catch(()=>{});
     }
 
     document.body.classList.add("flash-verde");
-
-    setTimeout(() => {
-        document.body.classList.remove("flash-verde");
-    }, 400);
+    setTimeout(() => document.body.classList.remove("flash-verde"), 300);
 }
 
-// --- XP / NÍVEL ---
+// XP
 function ganharXP() {
     let ganho = Math.floor(100 / nivel + nivel);
     xp += ganho;
@@ -64,18 +96,30 @@ function ganharXP() {
     }
 }
 
-// --- FUNÇÃO QUE CHECA A RESPOSTA ---
-function checarResposta() {
-    const resposta = Number(respostaInput.value);
+// GAME OVER
+function mostrarGameOver() {
+    clearInterval(timerInterval);
+
+    if (nivel > recorde) {
+        recorde = nivel;
+        localStorage.setItem("recordeMath", recorde);
+    }
+
+    nivelFinalSpan.textContent = nivel;
+    recordeSpan.textContent = recorde;
+
+    gameOverBG.classList.remove("hide");
+    document.getElementById("game-container").style.pointerEvents = "none";
+}
+
+// BOTÃO ENVIAR
+document.getElementById("enviar").onclick = () => {
+    const resposta = Number(document.getElementById("resposta").value);
 
     if (isNaN(resposta)) {
         mensagem.textContent = "Digite um número!";
         mensagem.className = "errou";
-
-        setTimeout(() => {
-            mensagem.textContent = "";
-            mensagem.className = "";
-        }, 800);
+        setTimeout(() => { mensagem.textContent=""; mensagem.className=""; }, 700);
         return;
     }
 
@@ -93,8 +137,7 @@ function checarResposta() {
         vidas--;
 
         if (vidas <= 0) {
-            alert("Game Over! Reiniciando.");
-            location.reload();
+            mostrarGameOver();
             return;
         }
     }
@@ -103,41 +146,27 @@ function checarResposta() {
     xpSpan.textContent = xp;
     vidasSpan.textContent = vidas;
 
-    respostaInput.value = "";
+    document.getElementById("resposta").value = "";
 
-    // Mostra nova pergunta após 700 ms + FOCAR no input
     setTimeout(() => {
         mensagem.textContent = "";
         mensagem.className = "";
         novaPergunta();
-
-        // força foco imediatamente
-        respostaInput.focus();
-
-        // força foco novamente depois (garante no Chromebook)
-        setTimeout(() => {
-            respostaInput.focus();
-        }, 10);
-
     }, 700);
-}
+};
 
-// --- BOTÃO ENVIAR ---
-document.getElementById("enviar").onclick = checarResposta;
-
-// --- ENTER TAMBÉM ENVIA ---
-respostaInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        checarResposta();
+// ENTER envia
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        document.getElementById("enviar").click();
     }
 });
 
-// --- BOTÃO DESISTIR ---
-document.getElementById("desistir").onclick = () => {
-    alert(`Você desistiu! Nível ${nivel}, XP ${xp}, Vidas ${vidas}`);
-    location.reload();
-};
+// DESISTIR
+document.getElementById("desistir").onclick = () => mostrarGameOver();
 
-// INÍCIO DO JOGO
+// JOGAR NOVAMENTE
+document.getElementById("restart-btn").onclick = () => location.reload();
+
+// INÍCIO
 novaPergunta();
-respostaInput.focus();
